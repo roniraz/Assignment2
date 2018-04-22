@@ -135,7 +135,7 @@ allocproc(void)
   p->context->eip = (uint)forkret;
 
   for(int i = 0; i < SIG_NUM; i++)
-    p->signalHandlers[i] = SIG_DFL;
+    p->signalHandlers[i] = (sighandler_t) SIG_DFL;
 /*
   p->sighandler = (sig_handler) - 1; // default signal handler value
   p->cstack.head = 0;
@@ -571,7 +571,7 @@ wakeup(void *chan)
 // Process won't exit until it returns
 // to user space (see trap in trap.c).
 int
-kill(int pid)
+kill(int pid, int signum)
 {
   struct proc *p;
 

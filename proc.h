@@ -1,14 +1,3 @@
-#define SIG_DFL 0 
-#define SIG_IGN 1
-
-#define SIG_NUM 32
-
-
-#define SIGKILL 9 
-#define SIGSTOP 17 
-#define SIGCONT 19 
-
-
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID

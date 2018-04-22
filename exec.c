@@ -101,7 +101,7 @@ exec(char *path, char **argv)
   curproc->tf->esp = sp;
   for(int i = 0; i < SIG_NUM; i++)
     if((int)&curproc->signalHandlers[i] != SIG_IGN)
-      curproc->signalHandlers[i] = SIG_DFL;
+      curproc->signalHandlers[i] = (sighandler_t)SIG_DFL;
 
   switchuvm(curproc);
   freevm(oldpgdir);

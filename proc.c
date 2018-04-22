@@ -481,6 +481,7 @@ forkret(void)
 
   popcli();//release(&ptable.lock);
   if (first) {
+    
     // Some initialization functions must be run in the context
     // of a regular process (e.g., they call sleep), and thus cannot
     // be run from main().
@@ -580,10 +581,16 @@ kill(int pid, int signum)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
+      if(signum == SIG_DFL)
+        p->signalMask ^= 1;
+      else {
+        int k = 1 << signum;
+        p->signalMask ^= k;
+      }
       // Wake process from sleep if necessary.
       //if(p->state == SLEEPING)
         //p->state = RUNNABLE;
-      cas((volatile int *)&p->state, SLEEPING, RUNNABLE);
+      //cas((volatile int *)&p->state, SLEEPING, RUNNABLE);
 
       //release(&ptable.lock);
       return 0;

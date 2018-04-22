@@ -578,20 +578,14 @@ kill(int pid, int signum)
 
   
   //pushcli();//acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid){
-      p->killed = 1;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->pid == pid) {
       if(signum == SIG_DFL)
         p->signalMask ^= 1;
       else {
         int k = 1 << signum;
         p->signalMask ^= k;
       }
-      // Wake process from sleep if necessary.
-      //if(p->state == SLEEPING)
-        //p->state = RUNNABLE;
-      //cas((volatile int *)&p->state, SLEEPING, RUNNABLE);
-
       //release(&ptable.lock);
       return 0;
     }
@@ -661,4 +655,12 @@ signal(int signum, sighandler_t handler) {
 void 
 sigret(void) {
 
+}
+
+
+void
+sigkill(void) {
+  struct proc *p = myproc();
+  p->killed = 1;
+  cas((volatile int *)&p->state, SLEEPING, RUNNABLE);
 }
